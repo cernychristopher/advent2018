@@ -16,6 +16,8 @@ object Advent3 {
       y <- top until bottom
       x <- left until right
     } yield Point(x, y)
+
+    def overlapsWith(otherReactangle: Rectangle): Boolean = claimedPoints.toSet.intersect(otherReactangle.claimedPoints.toSet).nonEmpty
   }
 
   val testInput = List(
@@ -1427,5 +1429,8 @@ object Advent3 {
     val claimedPoints = rectangles.flatMap(_.claimedPoints)
     val solution1 = claimedPoints.groupBy(identity).count(_._2.size > 1)
     println(solution1)
+
+    val solution2 = rectangles.find(rectangle => rectangles.forall(otherRectangle => otherRectangle.id == rectangle.id || !rectangle.overlapsWith(otherRectangle))).map(_.id)
+    println(solution2)
   }
 }
