@@ -24,11 +24,19 @@ object Advent5 {
     even.take(1) ++ subReact(even.drop(1))
   }
 
+  private def reducedLength(s: String) = {
+    val reducedInputs = Stream.iterate(s)(react)
+    val reducedInputLengths = reducedInputs.map(_.length)
+    reducedInputLengths.zip(reducedInputLengths.drop(1)).dropWhile(pair => pair._1 != pair._2).head._1
+  }
+
   def main(args: Array[String]): Unit = {
     val testInput: String = Source.fromURL(getClass.getResource("/5.input")).getLines().next()
-    val reducedInputs = Stream.iterate(testInput)(react)
-    val reducedInputLengths = reducedInputs.map(_.length)
-    val solution1 = reducedInputLengths.zip(reducedInputLengths.drop(1)).dropWhile(pair => pair._1 != pair._2).head._1
+    val solution1 = reducedLength(testInput)
     println(solution1)
+
+    val chars = testInput.map(_.toLower).toSet[Char].map(char => char -> testInput.filterNot(_.toLower == char)).toMap.mapValues(reducedLength)
+    val solution2 = chars.minBy(_._2)
+    println(solution2)
   }
 }
